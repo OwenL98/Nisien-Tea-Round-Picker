@@ -27,3 +27,4 @@ public class GetNextRoundController(
         return Ok(response);
     }
 }//TODO: rename all of the variables + change route etc
+//TODO: validation, list bigger than 1

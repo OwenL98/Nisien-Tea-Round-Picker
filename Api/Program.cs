@@ -7,7 +7,8 @@ var services = builder.Services;
 
 services
     .AddCommandHandlers()
-    .AddServices();
+    .AddServices()
+    .AddFacades();
 
 services.AddControllers();
 
