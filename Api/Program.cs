@@ -6,7 +6,6 @@ var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 
 services
-    .AddCommandHandlers()
     .AddServices()
     .AddFacades();
 

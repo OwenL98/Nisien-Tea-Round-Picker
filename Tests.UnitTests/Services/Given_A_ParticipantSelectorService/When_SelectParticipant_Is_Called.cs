@@ -4,9 +4,9 @@ using FluentAssertions;
 using NSubstitute;
 using Xunit;
 
-namespace Tests.UnitTests.Services.Given_A_NameSelectorService;
+namespace Tests.UnitTests.Services.Given_A_ParticipantSelectorService;
 
-public class When_SelectName_Is_Called
+public class When_SelectParticipant_Is_Called
 {
     [Fact]
     public void Then_Facade_Is_Called()
@@ -17,7 +17,7 @@ public class When_SelectName_Is_Called
         var sut = CreateSut(randomFacade: mockRandomFacade);
 
         //Act
-        sut.SelectName(participants);
+        sut.SelectParticipant(participants);
 
         //Assert
         mockRandomFacade.Received(1).GetRandomNumber(2);
@@ -34,16 +34,16 @@ public class When_SelectName_Is_Called
             randomFacade: dummyRandomFacade);
 
         //Act
-        var result = sut.SelectName(participants);
+        var result = sut.SelectParticipant(participants);
 
         //Assert
         result.Should().BeEquivalentTo("Darren");
     }
 
-    private static NameSelectorService CreateSut(
+    private static ParticipantSelectorService CreateSut(
         IRandomFacade? randomFacade = null)
     {
-        return new NameSelectorService(
+        return new ParticipantSelectorService(
             randomFacade: randomFacade ?? CreateRandomFacadeTestDouble()
         );
     }
@@ -57,5 +57,4 @@ public class When_SelectName_Is_Called
 
         return sub;
     }
-        
 }
