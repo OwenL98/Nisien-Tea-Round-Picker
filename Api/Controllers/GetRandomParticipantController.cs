@@ -18,7 +18,6 @@ public class GetRandomParticipantController(
     /// <param name="getRandomParticipantRequest"></param>
     /// <returns code= "200">OK</returns>
     /// <returns code= "400">BadRequest</returns>
-    [ApiExplorerSettings(GroupName = "GetRandomParticipant")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpPost("v1/random/participant")]
