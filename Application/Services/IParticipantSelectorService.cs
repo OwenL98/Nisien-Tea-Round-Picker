@@ -1,6 +1,8 @@
+using Application.Domain;
+
 namespace Application.Services;
 
 public interface IParticipantSelectorService
 {
-    string SelectParticipant(IEnumerable<string> name);
+    Participant SelectParticipant(IEnumerable<Participant> participant);
 }

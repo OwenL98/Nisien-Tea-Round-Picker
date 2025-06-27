@@ -1,3 +1,4 @@
+using Application.Domain;
 using Application.Services;
 using Common.Facades;
 using FluentAssertions;
@@ -12,7 +13,11 @@ public class When_SelectParticipant_Is_Called
     public void Then_Facade_Is_Called()
     {
         //Arrange
-        var participants = new []{"Joe", "Darren"};
+        var participants = new []
+        {
+            new Participant{Name = "Joe"},
+            new Participant{Name = "Darren"}
+        };
         var mockRandomFacade = CreateRandomFacadeTestDouble();
         var sut = CreateSut(randomFacade: mockRandomFacade);
 
@@ -27,7 +32,11 @@ public class When_SelectParticipant_Is_Called
     public void Then_Expected_Name_Is_Returned()
     {
         //Arrange
-        var participants = new []{"Joe", "Darren"};
+        var participants = new []
+        {
+            new Participant{Name = "Joe"},
+            new Participant{Name = "Darren"}
+        };
         var dummyRandomFacade = CreateRandomFacadeTestDouble();
         
         var sut = CreateSut(
@@ -37,7 +46,7 @@ public class When_SelectParticipant_Is_Called
         var result = sut.SelectParticipant(participants);
 
         //Assert
-        result.Should().BeEquivalentTo("Darren");
+        result.Should().BeEquivalentTo(new Participant{Name = "Darren"});
     }
 
     private static ParticipantSelectorService CreateSut(

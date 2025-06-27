@@ -1,3 +1,4 @@
+using Application.Domain;
 using Common.Facades;
 
 namespace Application.Services;
@@ -5,12 +6,13 @@ namespace Application.Services;
 public class ParticipantSelectorService(
     IRandomFacade randomFacade ) : IParticipantSelectorService
 {
-    public string SelectParticipant(IEnumerable<string> name)
+    public Participant SelectParticipant(IEnumerable<Participant> participants)
     {
-        var randomNumber = randomFacade.GetRandomNumber(name.Count());
+        var participantsList = participants.ToList();
+        var randomNumber = randomFacade.GetRandomNumber(participantsList.Count);
         
-        var selectedName = name.ElementAt(randomNumber);
+        var selectedParticipant = participantsList.ElementAt(randomNumber);
         
-        return selectedName;
+        return selectedParticipant;
     }
 }

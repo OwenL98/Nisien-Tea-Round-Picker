@@ -1,6 +1,7 @@
 using Api.Controllers;
 using Api.Request;
 using Api.Response;
+using Application.Domain;
 using Application.Services;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
@@ -21,12 +22,24 @@ public class When_GetRandomParticipant_Is_Called
             "name 2"
         };
         
-        var getRandomParticipantRequest = new GetRandomParticipantRequest()
+        var getRandomParticipantRequest = new GetRandomParticipantRequest
         {
             Participants = participants
         };
+        
+        var expectedParticipants = new []
+        {
+            new Participant{Name = "John Doe"}, 
+            new Participant{Name = "name 2"}
+        };
 
         var mockParticipantSelectorService = CreateParticipantSelectorServiceTestDouble();
+
+        var actual = new List<Participant>();
+        mockParticipantSelectorService
+            .SelectParticipant(
+                Arg.Do<List<Participant>>(arg => actual = arg));
+        
         var sut = CreateSut(
             participantSelectorService: mockParticipantSelectorService);
 
@@ -36,7 +49,9 @@ public class When_GetRandomParticipant_Is_Called
         //Assert
         mockParticipantSelectorService
             .Received(1)
-            .SelectParticipant(participants);
+            .SelectParticipant(Arg.Any<List<Participant>>());
+        
+        actual.Should().BeEquivalentTo(expectedParticipants);
     }
 
     [Fact]
@@ -49,7 +64,7 @@ public class When_GetRandomParticipant_Is_Called
             "name 2"
         };
         
-        var getRandomParticipantRequest = new GetRandomParticipantRequest()
+        var getRandomParticipantRequest = new GetRandomParticipantRequest
         {
             Participants = participants
         };
@@ -58,8 +73,10 @@ public class When_GetRandomParticipant_Is_Called
         {
             Name = "John Doe",
         };
+        
+        var returnedParticipant = new Participant{Name = "John Doe"};
 
-        var dummyParticipantSelectorService = CreateParticipantSelectorServiceTestDouble();
+        var dummyParticipantSelectorService = CreateParticipantSelectorServiceTestDouble(returnedParticipant);
         var sut = CreateSut(dummyParticipantSelectorService);
 
         //Act
@@ -142,12 +159,13 @@ public class When_GetRandomParticipant_Is_Called
         );
     }
     
-    private static IParticipantSelectorService CreateParticipantSelectorServiceTestDouble()
+    private static IParticipantSelectorService CreateParticipantSelectorServiceTestDouble(
+        Participant? participant = null)
     {
         var sub = Substitute.For<IParticipantSelectorService>();
 
-        sub.SelectParticipant(Arg.Any<IEnumerable<string>>())
-            .ReturnsForAnyArgs("John Doe");
+        sub.SelectParticipant(Arg.Any<IEnumerable<Participant>>())
+            .ReturnsForAnyArgs(participant ?? new Participant{Name = "James Bond"});
         
         return sub;
     }

@@ -1,5 +1,6 @@
 using Api.Request;
 using Api.Response;
+using Application.Domain;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,6 @@ namespace Api.Controllers;
 public class GetRandomParticipantController(
     IParticipantSelectorService participantSelectorService) : ControllerBase
 {
-    
     /// <summary>
     /// Randomly select a participant from the given list of names
     /// </summary>
@@ -29,15 +29,20 @@ public class GetRandomParticipantController(
         {
             return BadRequest();
         }
-        
+
+        var participants = getRandomParticipantRequest
+            .Participants
+            .Select(participant => 
+                new Participant { Name = participant }).ToList();
+
         var selectedParticipant = participantSelectorService
-            .SelectParticipant(getRandomParticipantRequest.Participants);
+            .SelectParticipant(participants);
 
         var response = new GetRandomParticipantResponse
         {
-            Name = selectedParticipant
+            Name = selectedParticipant.Name
         };
-        
+
         return Ok(response);
     }
 
@@ -45,12 +50,13 @@ public class GetRandomParticipantController(
     {
         var participants = getRandomParticipantRequest.Participants;
         if (
-            participants.Equals(Enumerable.Empty<string>()) 
-            || getRandomParticipantRequest.Equals(new GetRandomParticipantRequest()) 
+            participants.Equals(Enumerable.Empty<string>())
+            || getRandomParticipantRequest.Equals(new GetRandomParticipantRequest())
             || participants.Count() <= 1)
         {
             return false;
         }
+
         return true;
     }
 }
