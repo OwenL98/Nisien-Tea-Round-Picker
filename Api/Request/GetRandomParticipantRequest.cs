@@ -8,5 +8,5 @@ public class GetRandomParticipantRequest
     /// <summary>
     /// The participants to select from
     /// </summary>
-    public IEnumerable<string> Participants { get; init; } = [];
+    public IEnumerable<Participant> Participants { get; init; } = [];
 }

@@ -1,8 +1,8 @@
 using Api.Request;
 using Api.Response;
-using Application.Domain;
 using Application.Services;
 using Microsoft.AspNetCore.Mvc;
+using domainParticipant = Application.Domain.Participant;
 
 namespace Api.Controllers;
 
@@ -29,10 +29,7 @@ public class GetRandomParticipantController(
             return BadRequest();
         }
 
-        var participants = getRandomParticipantRequest
-            .Participants
-            .Select(participant => 
-                new Participant { Name = participant }).ToList();
+        var participants = MapToDomainParticipants(getRandomParticipantRequest);
 
         var selectedParticipant = participantSelectorService
             .SelectParticipant(participants);
@@ -45,17 +42,30 @@ public class GetRandomParticipantController(
         return Ok(response);
     }
 
+    private static List<domainParticipant> MapToDomainParticipants(
+        GetRandomParticipantRequest getRandomParticipantRequest)
+    {
+        var participants = getRandomParticipantRequest
+            .Participants
+            .Select(participant =>
+                new domainParticipant
+                {
+                    Name = participant.Name
+                }
+            ).ToList();
+        
+        return participants;
+    }
+
     private static bool IsValid(GetRandomParticipantRequest getRandomParticipantRequest)
     {
         var participants = getRandomParticipantRequest.Participants;
-        if (
-            participants.Equals(Enumerable.Empty<string>())
-            || getRandomParticipantRequest.Equals(new GetRandomParticipantRequest())
+        if (getRandomParticipantRequest.Equals(new GetRandomParticipantRequest()) 
+            || participants.Equals(Enumerable.Empty<Participant>())
             || participants.Count() <= 1)
         {
             return false;
         }
-
         return true;
     }
 }
